@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Where She Waits</title>
+</head>
+
+<body>
+
+  <!-- A-Frame scene - need this for AFrameP5 to work -->
+  <a-scene id="VRScene" vr-mode-ui="enabled: false">
+    <a-assets id="VRAssets">
+      <!-- loading all the 3D models before game starts so they don't lag -->
+      <a-asset-item id="zombieModel" src="assets/Zombie.glb"></a-asset-item>
+      <a-asset-item id="grannyModel" src="assets/Grandmother.glb"></a-asset-item>
+      <a-asset-item id="closetModel" src="assets/Closet.glb"></a-asset-item>
+      <a-asset-item id="bronzeKeyModel" src="assets/bronze_key.glb"></a-asset-item>
+      <a-asset-item id="goldKeyModel" src="assets/gold_key.glb"></a-asset-item>
+      <a-asset-item id="silverKeyModel" src="assets/silver_key.glb"></a-asset-item>
+      <a-asset-item id="trapModel" src="assets/Trap_Hold.glb"></a-asset-item>
+      <a-asset-item id="doorModel" src="assets/Door.glb"></a-asset-item>
+    </a-assets>
+  </a-scene>
+
+  <!-- main menu screen -->
+  <div id="mainMenu" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; color: white; font-family: Arial, sans-serif;">
+    <h1 style="font-size: 48px; margin-bottom: 20px; color: #8B0000; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">WHERE SHE WAITS</h1>
+    <button id="startBtn" style="padding: 15px 40px; font-size: 24px; margin: 10px; background: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 5px;">START</button>
+    <button id="conceptBtn" style="padding: 15px 40px; font-size: 24px; margin: 10px; background: #9C27B0; color: white; border: none; cursor: pointer; border-radius: 5px;">CONCEPT</button>
+    <button id="instructionsBtn" style="padding: 15px 40px; font-size: 24px; margin: 10px; background: #2196F3; color: white; border: none; cursor: pointer; border-radius: 5px;">INSTRUCTIONS</button>
+  </div>
+
+  <!-- instructions page -->
+  <div id="instructionsMenu" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); display: none; flex-direction: column; justify-content: flex-start; align-items: center; z-index: 1001; color: white; font-family: Arial, sans-serif; overflow-y: auto; padding-top: 40px; box-sizing: border-box;">
+    <h2 style="font-size: 36px; margin-bottom: 20px; color: #8B0000;">INSTRUCTIONS</h2>
+    <div style="text-align: center; max-width: 600px; line-height: 1.8; font-size: 18px; padding: 0 20px;">
+      <p><strong>Movement:</strong> W, A, S, D keys</p>
+      <p><strong>Look Around:</strong> Move your mouse</p>
+      <p><strong>Interact:</strong> Press E when near objects</p>
+      <p><strong>Hide:</strong> Press H near closets</p>
+      <p><strong>Drop Trap:</strong> Press Q (if you have one)</p>
+      <p><strong>Restart:</strong> Press R</p>
+      <p><strong>Main Menu:</strong> Press M</p>
+      <p><strong>Options:</strong> Press ESC</p>
+      <br>
+      <p style="color: #cd7f32;"><em>Find the BRONZE key to unlock the secret room.</em></p>
+      <p style="color: #ffd700;"><em>Get the GOLD key inside, find the SILVER key.</em></p>
+      <p style="color: #00ff00;"><em>Use both to escape. Hide from her. Set traps. Survive.</em></p>
+      <br>
+      <p style="color: #aa88ff;"><em>Granny spawns after 15 seconds. Go find her - she might help you escape or give you an important clue. But beware... there's a twist.</em></p>
+    </div>
+    <button id="backFromInstructions" style="padding: 15px 40px; font-size: 24px; margin-top: 25px; margin-bottom: 40px; background: #666; color: white; border: none; cursor: pointer; border-radius: 5px;">BACK</button>
+  </div>
+
+  <!-- concept/story page -->
+  <div id="conceptMenu" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); display: none; flex-direction: column; justify-content: flex-start; align-items: center; z-index: 1001; color: white; font-family: Arial, sans-serif; overflow-y: auto; padding-top: 40px; box-sizing: border-box;">
+    <h2 style="font-size: 36px; margin-bottom: 20px; color: #8B0000;">THE STORY</h2>
+    <div style="text-align: center; max-width: 700px; line-height: 1.8; font-size: 17px; padding: 0 20px;">
+      <p style="font-style: italic; color: #cccccc; margin-bottom: 25px;">
+        You wake up in a dark, abandoned house with no memory of how you got here. The air is thick with dust and dread. 
+        Somewhere in the shadows, she waits... watching your every move. She has been here for years, and now you are her prey. 
+        Your only hope is to find the keys scattered throughout this cursed place and escape before she catches you. 
+        But be careful - she learns, she hunts, and she never stops.
+      </p>
+      <hr style="border: 1px solid #8B0000; margin: 20px 0;">
+      <h3 style="color: #8B0000; margin-bottom: 15px;">HOW TO SURVIVE</h3>
+      <div style="text-align: left;">
+        <p style="color: #cd7f32;">• <strong>Find the Bronze Key</strong> - It unlocks a secret room hidden in the house.</p>
+        <p style="color: #ffd700;">• <strong>Get the Gold Key</strong> - Hidden inside the secret room. You need it to escape.</p>
+        <p style="color: #c0c0c0;">• <strong>Find the Silver Key</strong> - Scattered somewhere in the house. You need this too.</p>
+        <p style="color: #00ff00;">• <strong>Escape</strong> - Use both the Gold and Silver keys at the exit door to get out alive.</p>
+        <br>
+        <p style="color: #ff6666;">• <strong>The Zombie</strong> - She patrols the house hunting for you. If she sees you, she will chase. She gets faster over time.</p>
+        <p style="color: #88ccff;">• <strong>Hide in Closets</strong> - When she's near, find a closet and press H to hide. Stay quiet until she passes.</p>
+        <p style="color: #ffaa00;">• <strong>Set Traps</strong> - Find traps around the house. Drop them with Q to freeze her temporarily.</p>
+        <br>
+        <p style="color: #aa88ff;">• <strong>Granny</strong> - After some time, Granny appears in the house. She might know a way to help you escape. Find her.</p>
+      </div>
+    </div>
+    <button id="backFromConcept" style="padding: 15px 40px; font-size: 24px; margin-top: 25px; margin-bottom: 40px; background: #666; color: white; border: none; cursor: pointer; border-radius: 5px;">BACK</button>
+  </div>
+
+  <!-- pause menu (shows when you press ESC) -->
+  <div id="optionsMenu" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1002; color: white; font-family: Arial, sans-serif;">
+    <h2 style="font-size: 36px; margin-bottom: 30px; color: #8B0000;">PAUSED</h2>
+    <button id="resumeBtn" style="padding: 15px 40px; font-size: 24px; margin: 10px; background: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 5px;">RESUME</button>
+    <button id="restartFromOptions" style="padding: 15px 40px; font-size: 24px; margin: 10px; background: #ff9800; color: white; border: none; cursor: pointer; border-radius: 5px;">RESTART</button>
+    <button id="mainMenuFromOptions" style="padding: 15px 40px; font-size: 24px; margin: 10px; background: #2196F3; color: white; border: none; cursor: pointer; border-radius: 5px;">MAIN MENU</button>
+  </div>
+
+  <!-- win screen when you escape -->
+  <div id="winScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 50, 0, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1003; color: white; font-family: Arial, sans-serif;">
+    <h1 style="font-size: 64px; margin-bottom: 20px; color: #00ff00; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">YOU ESCAPED!</h1>
+    <p style="font-size: 24px; margin-bottom: 40px; color: #aaffaa;">You made it out alive... this time.</p>
+    <button id="winMainMenuBtn" style="padding: 15px 40px; font-size: 24px; margin: 10px; background: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 5px;">MAIN MENU</button>
+  </div>
+
+  <!-- game over screen when you get caught -->
+  <div id="gameOverScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(50, 0, 0, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1003; color: white; font-family: Arial, sans-serif;">
+    <h1 style="font-size: 64px; margin-bottom: 20px; color: #ff0000; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">GAME OVER</h1>
+    <p style="font-size: 24px; margin-bottom: 40px; color: #ffaaaa;">She caught you...</p>
+    <button id="retryBtn" style="padding: 15px 40px; font-size: 24px; margin: 10px; background: #ff9800; color: white; border: none; cursor: pointer; border-radius: 5px;">TRY AGAIN</button>
+    <button id="gameOverMainMenuBtn" style="padding: 15px 40px; font-size: 24px; margin: 10px; background: #2196F3; color: white; border: none; cursor: pointer; border-radius: 5px;">MAIN MENU</button>
+  </div>
+
+  <!-- shows messages when you pick up keys or read clues -->
+  <div id="clueMessage" style="position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.8); color: white; padding: 20px 40px; border-radius: 10px; font-size: 24px; font-family: Arial, sans-serif; display: none; z-index: 999; border: 2px solid #ff4444; text-align: center; max-width: 600px;">
+    <div id="clueText"></div>
+  </div>
+
+  <!-- shows how many traps you have (top right) -->
+  <div id="trapIndicator" style="position: fixed; top: 20px; right: 20px; background: rgba(0, 0, 0, 0.7); color: white; padding: 10px 20px; border-radius: 5px; font-size: 18px; font-family: Arial, sans-serif; display: none; z-index: 998;">
+    TRAPS: 0 [Q to drop]
+  </div>
+
+  <!-- shows key count (top left) -->
+  <div id="keyIndicator" style="position: fixed; top: 20px; left: 20px; background: rgba(0, 0, 0, 0.7); color: gold; padding: 10px 20px; border-radius: 5px; font-size: 18px; font-family: Arial, sans-serif; display: none; z-index: 998;">
+    KEYS: 0/2
+  </div>
+
+  <!-- granny spawn countdown timer (top center) -->
+  <div id="grannyTimer" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.7); color: #ff6666; padding: 10px 20px; border-radius: 5px; font-size: 18px; font-family: Arial, sans-serif; display: none; z-index: 998;">
+    0:15
+  </div>
+
+  <!-- loading the libraries we need -->
+  <script src="js/p5.min.js"></script>
+  <script src="js/aframe.min.js"></script>
+  <script src="https://craignyu.github.io/aframep5/libraries/aframep5-v2.3.js"></script>
+
+  <!-- main game code -->
+  <script src="sketch.js"></script>
+
+</body>
+
+</html>
